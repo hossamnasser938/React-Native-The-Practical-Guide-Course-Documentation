@@ -87,9 +87,9 @@ import { StyleSheet, Text, View } from 'react-native';
 
 ## A Good Development Setup
 * On running your application on Android and IOS emulators, we can open the developer menu by hitting ` ctrl ` or ` cmd ` + ` m ` for **Android** or ` D ` for **IOS**. You can use this developer menu to:
-    * ` Reload `.
-    * Enable ` Live Reload `.
-    * Enable ` Hot Reloading `.(can not get the difference now).
+    * ` Reload ` to reload your application manually. In the emulator, you can reload manually by hitting ` R ` twice on **Android** or ` cmd + R ` on **IOS**.  
+    * Enable/Disable ` Live Reload `.
+    * Enable/Disable ` Hot Reloading `.(Can not get the difference between ` Live ` and ` Hot ` ` Reloading `).
     * and more.
 * To open this developer menu on a native device you can shake the phone.
 
