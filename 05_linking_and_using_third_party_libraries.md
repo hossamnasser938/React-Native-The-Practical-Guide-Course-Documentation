@@ -13,7 +13,7 @@ The 1st step **always** is to find the **Github repository** of the library in w
     
     2. The 2nd step there is that you follow the installation instruction for your platform whether **Android** or **IOS**. For me I will head to **Android** section.
     
-    3. On the **Android** section we have to options to complete the installation. The 1st option is: ` With Gradle ` and the 2nd one is: ` Manually `. Since ` With Gradle ` option is the recommended as stated there, I will proceed with it.
+    3. On the **Android** section we have 2 options to complete the installation. The 1st option is: ` With Gradle ` and the 2nd one is: ` Manually `. Since ` With Gradle ` option is the recommended as stated there, I will proceed with it.
     
     4. In ` android/app/build.gradle ` ( NOT android/build.gradle ) We either add this line only:
     ```
@@ -29,6 +29,7 @@ The 1st step **always** is to find the **Github repository** of the library in w
     Do not forget to replace these files ` [ 'MaterialIcons.ttf', 'EvilIcons.ttf' ] ` with the files you wanna copy. Since I will use ` Ionicons ` as the instructor did, I will copy only this file ` [ 'Ionicons.ttf' ] `.
 
     5. By now we successfully installed the library and it is ready to be used. The next step is to figure out how to use the library. Since I will use ` Ionicons `, I will head [there](). There you find the icons you can use. Find the name of the ` Icon ` you wanna use.
+
     6. Head to your ` Component ` where you want to use the ` Icon `. Let's replace the ` Delete ` button name with ` Icon `. In ` PlaceDetails.js `.
         1. ` import ` the ` Icon ` ` Component `.  
         ```js
@@ -49,4 +50,4 @@ The 1st step **always** is to find the **Github repository** of the library in w
           />
         </TouchableOpacity>
         ```
-        Note that if you're building for **Android**, you precede the name of the ` Icon ` with **"md-"**. If you're building for **IOS**, you precede the name with **"ios-"**.     
+        Note that if you're building for **Android**, you precede the name of the ` Icon ` with **"md-"**. If you're building for **IOS**, you precede the name with **"ios-"**. Later in the course we will learn how to do add cross-platform ` Icons ` that work for both platforms.     
