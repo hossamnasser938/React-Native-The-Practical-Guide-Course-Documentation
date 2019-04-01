@@ -30,26 +30,26 @@ Nothing new. Everything here is mentioned in **Chapter 1: "Getting Started"** un
     class App extends Component {}
     ```
 * The new thing for us is the ` React Native ` stuff:
-```js
-import { StyleSheet, Text, View } from 'react-native';
-```
+    ```js
+    import { StyleSheet, Text, View } from 'react-native';
+    ```
     * ` Text ` and ` View ` are basic ` React Native ` **components** which we can use and hence can be transformed on *building* and *compiling* to **native components**.
     * ` StyleSheet ` is what allows us to separate **components** *style* from the **JSX**. We use ` create ` method to create an **styling** object that wraps different styles of our ` components `:
-    ```js
-    const styles = StyleSheet.create();
-    ```
-    and then pass an object to ` create ` method that wraps styles of our ` components ` each as an inner object.
-    ```js
-    const styles = StyleSheet.create({
-      container: {
+      ```js
+      const styles = StyleSheet.create();
+      ```
+      and then pass an object to ` create ` method that wraps styles of our ` components ` each as an inner object.
+      ```js
+      const styles = StyleSheet.create({
+        container: {
 
-      },
-      simple_text: {
+        },
+        simple_text: {
 
-      }
-    });
-    ```
-    Then we can reference those ` style ` objects in the **JSX** by ` styles.[name] `.
+        }
+      });
+        ```
+      Then we can reference those ` style ` objects in the **JSX** by ` styles.[name] `.
 
 
 ## Switching away from create-react-native-app
@@ -295,67 +295,70 @@ What happens here is when we removed ` flex ` attribute, the ` View ` now takes 
 ## Adding a Button and Managing State
 * Now after we added the ` Button ` ` Add ` that is intended to let the user adds places, we hope to actually let the user does so and also display the list of places he added till now.   
     1. We need to keep track of the places added in the ` state `.
-    ```js
-    state = {
-      placeName: "",
-      places: []
-    };
-    ```
+        ```js
+        state = {
+          placeName: "",
+          places: []
+        };
+        ```
+
     2. We need to define a method that adds the new place in ` places ` each time the user adds a new place by hitting the ` Button `.
-    ```js
-    addPlaceHandler = () => {
-      if( this.state.placeName.trim() !== "" ) {
-        this.setState( prevState => {
-          return {
-            places: prevState.places.concat( this.state.placeName )
-          };
-        } );
-      }
-    }
-    ```
-    Notice that we :
-        * checked if the user entered an empty string.
-        * we used ` setState ` method in a new way. We passed it not the ` newState ` but a ` function ` that accepts the ` prevState ` and returns the ` newState `. Notice also that We updated the ` prevState ` in an **immutable** way using ` concat ` method(This is important).
+        ```js
+        addPlaceHandler = () => {
+          if( this.state.placeName.trim() !== "" ) {
+            this.setState( prevState => {
+              return {
+                places: prevState.places.concat( this.state.placeName )
+              };
+            } );
+          }
+        }
+        ```
+        Notice that we :
+          * checked if the user entered an empty string.
+          * we used ` setState ` method in a new way. We passed it not the ` newState ` but a ` function ` that accepts the ` prevState ` and returns the ` newState `. Notice also that We updated the ` prevState ` in an **immutable** way using ` concat ` method(This is important).
+
     3. We need to connect this method ` addPlaceHandler ` to the ` Button `. We use a ` prop ` named ` onPress `. It is the alternative of ` onClick ` in ` React `.
-    ```js
-    <Button
-    style={ { width: "30%" } }
-    title="Add"
-    onPress={ this.addPlaceHandler } />
-    ```
+        ```js
+        <Button
+        style={ { width: "30%" } }
+        title="Add"
+        onPress={ this.addPlaceHandler } />
+        ```
+
     4. Last before we ` return ` in the ` render ` method, we get our ` places ` ready by wrapping each ` place ` in a ` Text ` to be easily outputted in the **JSX**. We do so using ` map ` method.
-    ```js
-    render() {
-      const placesTexts = this.state.places.map( (value, index) => ( <Text key={ index }>{ value }</Text> ) );
+        ```js
+        render() {
+          const placesTexts = this.state.places.map( (value, index) => 
+            ( <Text key={ index }>{ value }</Text> ) );
 
-      return (
-        <View style={styles.container}>
-          <View style={ styles.input_container }>
-            <TextInput style={ { width:"70%", borderColor:"black", borderWidth:1 } }
-            placeholder="Enter an Awesome Place"
-            placeholderTextColor="orange"
-            value={ this.state.placeName }
-            onChangeText={ this.onChangeTextHandler } />
-
-            <Button
-            style={ { width: "30%" } }
-            title="Add"
-            onPress={ this.addPlaceHandler } />
-          </View>
-          <View>
-            { placesTexts }
-          </View>
-        </View>
-      );
-    }
-    ```
-    Do not forget to ` import ` the ` Text ` ` Component `.
-    ```js
-    import {StyleSheet, View, Text, TextInput, Button} from 'react-native';
-    ```
-    **Hint**:
-        * The default value of ` flexDirection ` attribute is ` column `, and since our ` View ` that wraps the ` places ` is set to default, ` places ` will be presented in a vertical list.
-        * Whenever the ` state.places ` is changed by hitting the ` Button `, everything affected by it, is changed also so the ` placesTexts ` is updated and the **UI** is updated based on that update.      
+          return (
+            <View style={styles.container}>
+              <View style={ styles.input_container }>
+                <TextInput style={ { width:"70%", borderColor:"black", borderWidth:1 } }
+                placeholder="Enter an Awesome Place"
+                placeholderTextColor="orange"
+                value={ this.state.placeName }
+                onChangeText={ this.onChangeTextHandler } />
+                <Button
+                style={ { width: "30%" } }
+                title="Add"
+                onPress={ this.addPlaceHandler } />
+              </View>
+              <View>
+                { placesTexts }
+              </View>
+            </View>
+          );
+        }
+        ```
+        Do not forget to ` import ` the ` Text ` ` Component `.
+        ```js
+        import {StyleSheet, View, Text, TextInput, Button} from 'react-native';
+        ```
+        **Hints**:
+          * The default value of ` flexDirection ` attribute is ` column `, and since our ` View ` that wraps the ` places ` is set to default, ` places ` will be presented in a vertical list.
+          * Whenever the ` state.places ` is changed by hitting the ` Button `, everything affected by it, is changed also so the ` placesTexts ` is updated and the **UI** is updated based on that update.      
 
 
 ## Creating a Custom Component
@@ -409,54 +412,54 @@ What happens here is when we removed ` flex ` attribute, the ` View ` now takes 
 ## Time to Practice the Basics
 * Now the time for the first assignment. We see our ` App ` ` Component ` got much bigger so we need to **decompose** it into multiple ` Components ` to make it more manageable.
     1. Let's start by separating the ` View ` that wraps the ` TextInput ` and the ` Button ` in a custom ` Component ` named ` AddPlace `. Since we still do not know how to use ` Redux ` in ` React Native `, we will handle ` state ` ourselves. We will leave the ` state ` as it is living in ` App ` ` Component ` and pass the methods that update this ` state ` as ` props ` to our new custom ` Component `.
-        1. In ` AddPlace.js `.
-        ```js
-        import React from 'react';
-        import { View, Button, TextInput, StyleSheet } from 'react-native';
+      1. In ` AddPlace.js `.
+          ```js
+          import React from 'react';
+          import { View, Button, TextInput, StyleSheet } from 'react-native';
 
-        const AddPlace = ( props ) => (
-          <View style={ styles.input_container }>
-            <TextInput style={ { width:"70%", borderColor:"black", borderWidth:1 } }
-            placeholder="Enter an Awesome Place"
-            placeholderTextColor="orange"
-            value={ props.placeName }
-            onChangeText={ props.onChangeTextHandler } />
+          const AddPlace = ( props ) => (
+            <View style={ styles.input_container }>
+              <TextInput style={ { width:"70%", borderColor:"black", borderWidth:1 } }
+              placeholder="Enter an Awesome Place"
+              placeholderTextColor="orange"
+              value={ props.placeName }
+              onChangeText={ props.onChangeTextHandler } />
 
-            <Button
-            style={ { width: "30%" } }
-            title="Add"
-            onPress={ props.addPlaceHandler } />
-          </View>
-        )
+              <Button
+              style={ { width: "30%" } }
+              title="Add"
+              onPress={ props.addPlaceHandler } />
+            </View>
+          )
 
-        const styles = StyleSheet.create( {
-          input_container: {
-            width: "100%",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center"
-          }
-        } );
+          const styles = StyleSheet.create( {
+            input_container: {
+              width: "100%",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center"
+            }
+          } );
 
-        export default AddPlace;
-        ```
-        2. In ` App.js `.  
-        We need to ` import ` ` AddPlace ` ` Component `. Now no need to ` import ` ` Button ` nor ` TextInput ` in ` App.js `.
-        ```js
-        import AddPlace from './src/components/AddPlace';
-        ```
-        Now our **JSX** in ` App.js ` is reduced to this.
-        ```js
-        <View style={styles.container}>
-          <AddPlace
-          placeName={ this.state.placeName }
-          onChangeTextHandler={ this.onChangeTextHandler }
-          addPlaceHandler={ this.addPlaceHandler } />
-          <View style={ styles.list_container }>
-            { placesTexts }
-          </View>
-        </View>
-        ```
+          export default AddPlace;
+          ```
+
+        2. In ` App.js `. We need to ` import ` ` AddPlace ` ` Component `. Now no need to ` import ` ` Button ` nor ` TextInput ` in ` App.js `.
+            ```js
+            import AddPlace from './src/components/AddPlace';
+            ```
+            Now our **JSX** in ` App.js ` is reduced to this.
+            ```js
+            <View style={styles.container}>
+              <AddPlace
+              placeName={ this.state.placeName }
+              onChangeTextHandler={ this.onChangeTextHandler }
+              addPlaceHandler={ this.addPlaceHandler } />
+              <View style={ styles.list_container }>
+                { placesTexts }
+              </View>
+            </View>
+            ```
 
     2. Let's now separate the whole list in a custom ` Component ` named ` PlacesList.js `.
         1. In ` PlacesList.js `.
