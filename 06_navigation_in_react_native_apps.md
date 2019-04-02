@@ -1,13 +1,13 @@
 # Navigation in React Native Apps
 
 ## Module Introduction
-* In this module we're looking at one of the core concepts of mobile app development. It's **navigation** or simply how to move from A to B in a ` React Native ` app.
+* In this module we're looking at one of the core concepts of mobile app development. It's **navigation** or simply how to move from A to B in a mobile app.
 * **Navigation** in the web is done using **URLs**. However, this is not the case in mobile apps.
 * In **Androd** We have ` Activity ` which is a Screen or a bunch of screens bundled to serve related purposes. We can move from any ` Activity ` to another in an Android app. Ofcourse **IOS** has its own solutions to provide **navigation**.
 * In ` React Native ` we have different solutions for **navigation**. In this module we will look at these different solutions and cover in details one of them. We will also see how to pass data around. As well as we will see how to use ` Redux ` besides this **navigation** solution.
 
 
-## Navigation in Web Apps VS Web Apps
+## Navigation in Web Apps VS Native Apps
 * In web apps we have **URLs** that can be used to display different ` React ` ` components ` based on where the user in.
 * In mobile apps we do not have **URLs**. Instead we can have:
     * **Stack-based**  
@@ -21,11 +21,11 @@
 * In ` React Native ` we have differen solutions for **navigation**:
     * There is built-in ` components ` that work on **IOS** only. Ofcourse we need a cross-platform solution. The following are some cross-platform solutions.
     * ` React Navigation `  
-    A **JavaScript** library that provides a simple way to navigate in a ` React Native ` apps. Since it is a **JavaScript** library, this meas that it does not provide *native* **navigation**. It is still a good and easy solution. However, the instructor has a negative feedback on it(It is still buggy). It also has performance issues since it is not *native*.
+    A **JavaScript** library that provides a simple way to navigate in ` React Native ` apps. Since it is a **JavaScript** library, this meas that it does not provide *native* **navigation**. It is still a good and easy solution. However, the instructor has a negative feedback on it(It is still buggy). It also has performance issues since it is not *native*.
     * ` Native Navigation `    
     a *native* solution.
     * ` React Native Navigation `  
-    a *native* solution developed by ` Wix `. This is the library that we will use through the coures.
+    a *native* solution developed by **Wix**. This is the library that we will use through the course.
 * ` React Native Navigation `  
     * If we head to their Github [repo](https://github.com/wix/react-native-navigation), we find that the last released version is v2. However, the instructor recorded the course before v2 was released. We will follow along with v1 with the instructor.
     * To get the documentation of v1, we change the ` master ` branch to ` v1 ` branch and then open ` docs ` folder. There you find the documentation you need to follow along.
@@ -43,7 +43,7 @@
 
 ## Register and Render a Screen
 * Now let's see how to use ` React Native Navigation `.
-* In a ` React ` web app we had categorizing our ` Components ` into 2 categories:
+* In a ` React ` web app we have categorized our ` Components ` into 2 categories:
     * ` Containers `  
     These were the stateful ` components ` that wrap ` components `. They are also the ` components ` that are loaded using ` Router `.
     * ` Components `  
@@ -79,39 +79,37 @@ export default Auth;
 
 * Now let's do these two steps in our awesome_places app. We head to ` App.js ` and remove all the stuff there.
     1. We ` register ` our ` Auth ` ` screen `.
-    ```js
-    import { Navigation } from 'react-native-navigation';
-    import AuthScreen from 'src/screens/Auth'; 
+        ```js
+        import { Navigation } from 'react-native-navigation';
+        import AuthScreen from 'src/screens/Auth'; 
 
-    Navigation.registerComponent("awesome_places.AuthScreen", () => Auth);
-    ```
-    Note that we ` imported ` ` Navigation ` from ` React Native Navigation ` that we use to ` register ` ` screens ` as well as starting app. ` registerComponent ` method accepts at least: 
-        * a unique string for the ` screen ` to be used in navigation.
+        Navigation.registerComponent("awesome_places.AuthScreen", () => Auth);
+        ```
+        Note that we ` imported ` ` Navigation ` from ` React Native Navigation ` that we use to ` register ` ` screens ` as well as starting app. ` registerComponent ` method accepts at least: 
+        * a unique identifier for the ` screen ` to be used in navigation.
         * a ` function ` that ` returns ` the ` screen ` to be ` rendered ` in navigation.
 
     2. We start an app. To start a **stack-based** app we call ` startSigleScreenApp ` on ` Navigation `. To start a **tab-based** one we call ` startTabBasedApp ` .
-    ```js
-    Navigation.startSingleScreenApp({
-        screen: {
-            screen: "awesome_places.AuthScreen",
-            title: "Login"
-        }
-    });
-    ```
-    ` startSingleScreenApp ` method accepts an object which can have multiple options. The one mandatory there is the ` screen ` property which is assigned an object with at least those two properties:
-        * ` screen ` which is the unique name of the ` screen `.
-        * ` title ` which is a string to be displayed in the nav bar.
+        ```js
+        Navigation.startSingleScreenApp({
+            screen: {
+                screen: "awesome_places.AuthScreen",
+                title: "Login"
+            }
+        });
+        ```
+        ` startSingleScreenApp ` method accepts an object which can have multiple properties. The one mandatory there is the ` screen ` property which is assigned an object with at least ` screen ` property which is the unique identifier of the ` screen `. We add ` title ` property which is a string to be displayed in the nav bar.
 
 * For all that to work we have to head to ` index.js ` or ` index.android.js ` and ` index.ios.js ` if they exist and just replace all the stuff there with a single line of code.
 ```js
 import App from './App';
 ```
-Note that we did not ` export ` any thing in ` App.js ` so importing ` App ` in ` index.js ` will execute the script there in which we start an app.
+Note that we did not ` export ` any thing in ` App.js ` so, I guess, importing ` App ` in ` index.js ` will execute the script there in which we start an app.
 
 
 ## Adding a Tabs Screen(Tabs Navigation)
 * We took a look at how to navigate using **stack-based** style. Let's have a look at how to navigate in a **tab-based** style.
-* For that purpose let's create a folder under ` src/screens ` named ` main_tabs `. In this folder we're gonna create 3 files: 2 for two tabs and the 3rd to combine those 2 tabs.
+* For that purpose let's create a folder under ` src/screens ` named ` main_tabs `. In this folder we're gonna create 3 files: 2 for 2 tabs and the 3rd to combine those 2 tabs.
     1. Create a file named ` AddPlace.js `
     ```js
     import React, { Component } from 'react';
@@ -172,7 +170,7 @@ Note that we did not ` export ` any thing in ` App.js ` so importing ` App ` in 
 
     export default createMainTabs;
     ```
-    ` startTabBasedApp ` method accepts an object of many properties. The property that matters now is the ` tabs ` property which is assigned an ` array ` of tabs objects. Each tab object contains at least one property named ` screen ` which is assigned a unique name of a ` screen ` to be loaded on selecting this tab. ` label ` property is the name displayed for the tab and ` title ` is the name displayed on the nav bar when the tab is selected.   
+    ` startTabBasedApp ` method accepts an object of many properties. The property that matters now is the ` tabs ` property which is assigned an ` array ` of tabs objects. Each tab object contains at least one property named ` screen ` which is assigned a unique name of a ` screen ` to be loaded on selecting this tab. ` label ` property is the name displayed on the tab ` Button ` used to select the tab and ` title ` is the name displayed on the nav bar when the tab is selected.   
     
     4. Note that we must ` register ` ` AddPlace ` and ` FindPlace ` ` screen ` in ` App.js ` to be able to load them using ` React Native Navigation `.
     ```js
@@ -239,7 +237,7 @@ Note that we did not ` export ` any thing in ` App.js ` so importing ` App ` in 
     title: "Find Place"
 }
 ```
-Fortunately this object has a property named ` icon ` that we can use to add an ` icon ` to a tab. Unfortunately too, we have setup the ` react-native-vector-icons ` library that we can use to fetch icons. The bad thing is that ` icon ` property can not be assigned a ` Component ` like this ` <Icon> </Icon> `. Instead, if we look at the official documentation we see the way we can assign this property:
+Fortunately, this object has a property named ` icon ` that we can use to add an ` icon ` to a tab. Fortunately too, we have setup the ` react-native-vector-icons ` library that we can use to fetch icons. The bad thing is that ` icon ` property can not be assigned a ` Component ` like this ` <Icon /> `. Instead, if we look at the official documentation we see the way we can assign this property:
 ```js
 icon: require('../img/one.png'), 
 ```
@@ -251,7 +249,7 @@ and then we can use ` getImageSource `.
 ```js
 icon: Icon.getmageSource(""),
 ```
-However, this also would not work. The reason is ` getImageSource ` is an asynchronous ` function ` that returns a ` Promise ` and a ` Promise ` can not be assigned to ` icon ` property. The solution is to let this ` Promise ` resolves and then invoke the ` function ` ` createMainTabs `. However, a new problem appears. We need to fetch 2 ` icons ` for 2 tabs. Fortunately, ` Promise ` object has a method named ` all ` that let you pass multple ` Promises ` and provide a callback to be executed when all passed ` Promises ` are resolved. In ` createMainTabs `.
+However, this also would not work. The reason is that ` getImageSource ` is an **asynchronous** ` function ` that returns a ` Promise ` and a ` Promise ` can not be assigned to ` icon ` property. The solution is to let this ` Promise ` resolves and then invoke the ` function ` ` createMainTabs `. However, a new problem appears. We need to fetch 2 ` icons ` for 2 tabs. Fortunately, ` Promise ` object has a method named ` all ` that lets you pass multple ` Promises ` and provide a callback to be executed when all passed ` Promises ` are resolved. In ` createMainTabs `.
 ```js
 import { Navigation } from 'react-native-navigation';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -287,7 +285,7 @@ export default createMainTabs;
 
 
 ## Connecting Screens to Redux
-* Till now we managed to navigate around but did not add the functionality of our app: adding place, and findinf place. To do that we will need to pass data between ` screens `. This is possible in ` React Native Navigation ` but not as good as we wish.
+* Till now we managed to navigate around but did not add the functionality of our app: adding place, and finding place. To do that we will need to pass data between ` screens `. This is possible in ` React Native Navigation ` but not as good as we wish.
 * The good thing is that we still can use ` Redux `. So let's ` subscribe ` our ` screens ` to the ` store `. To do that all we need to do is to pass the app ` store ` as a 3rd argument and the ` Provider ` ` component ` as 4th argument to ` registerComponent ` method in ` App.js `. We do that with ` screens ` that need ` Redux ` to work.
     1. ` import ` ` Provider ` ` Component `.
     ```js
@@ -328,7 +326,7 @@ export default createMainTabs;
     1. ` render ` this ` component ` in ` AddPlace ` ` screen `.
     2. ` connect ` ` AddPlace ` ` screen ` to ` Redux `.
     3. define ` addPlaceHandler `.
-    4. pass ` addPlaceHandler ` to the ` AddPlace ` ` Component `[It seems that when the instructor named all ` screens ` with ` Screen ` word in the end was a good decision to avoid the ambiguity we see now. For that reason I will do the same].
+    4. pass ` addPlaceHandler ` to the ` AddPlace ` ` Component `[I will named all ` screens ` with ` Screen ` word in the end to avoid the ambiguity we see now.].
 ```js
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
@@ -402,8 +400,7 @@ export default connect( mapStateToProps )( FindPlaceScreen );
     import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
     import Icon from 'react-native-vector-icons/Ionicons';
 
-    const PlaceDetails = props => {
-    return(
+    const PlaceDetails = props => (
         <View style={ styles.container }>
             <Image
             source={ props.selectedPlace.image }
@@ -423,7 +420,6 @@ export default connect( mapStateToProps )( FindPlaceScreen );
             </TouchableOpacity>
         </View>
     );
-    }
 
     const styles = StyleSheet.create( {
         container: {
@@ -446,7 +442,10 @@ export default connect( mapStateToProps )( FindPlaceScreen );
     ```
     Note that we need to ` register ` this ` screen ` in ` App.js `.
     ```js
-    Navigation.registerComponent("awesome_places.PlaceDetailsScreen", () => PlaceDetailsScreen);
+    Navigation.registerComponent(
+        "awesome_places.PlaceDetailsScreen", 
+        () => PlaceDetailsScreen
+    );
     ```
 
     2. Now we need to display ` PlaceDetailsScreen ` on clicking on an item in ` PlacesList ` ` component `. Note that ` PlacesList ` gets a ` prop ` from ` FindPlaceScreen ` named ` selectItemHandler ` which is a ` function ` to be called when an item is clicked. So let's pass this ` prop ` from ` FindPlaceScreen `. Inside ` selectItemHandler ` we will open a new ` screen ` which is ` PlaceDetailsScreen ` and pass the ` selectedPlace ` as a ` prop `. Each ` screen ` loaded by ` React Native Navigation ` is passed a ` prop ` named ` navigator ` which has a bunch of methods. One of these methods is ` push ` which accepts an object of multiple attributes. The most important attribute is ` screen ` which is the unique identifier of the ` screen ` to be pushed. Another important attribute is ` title ` which is the name to be displayed on the nav bar. Another important attribute is ` passProps ` which is an object to pass ` props ` to the ` screen ` you ` push `.
@@ -617,7 +616,7 @@ Navigation.startTabBasedApp( {
         } );
 ```
 
-* What we did till now actually renders a side drawer for us but the user does not that there is a side drawer there because ` React Native ` does not show a button for that by default. You have to add the button by your own. To do that We assign ` navigatorButtons ` attribute in the object we assign for ech tab in the tabs array in ` createMainTabs `. In this object we assign an array to ` leftButtons ` or ` rightButtons ` containing objects for buttons. Note that to dislay the button on both tabs we have to duplicate some code in both tabs.
+* What we did till now actually renders a side drawer for us but the user does not know that there is a side drawer there because ` React Native ` does not show a button for that by default. You have to add the button on your own. To do that We assign ` navigatorButtons ` attribute in the object we assign for ech tab in the tabs array in ` createMainTabs `. In this object we assign an array to ` leftButtons ` or ` rightButtons ` containing objects for buttons. Note that to dislay the button on both tabs we have to duplicate some code in both tabs.
 ```js
 Promise.all( [
         Icon.getImageSource("md-search", 30),
@@ -680,7 +679,7 @@ constructor( props ) {
     props.navigator.setOnNavigatorEvent( ( event ) => console.log( event ) );
 }
 ```
-Note that for each event we have two useful attributes: ` type ` and ` id ` which allow you to capture the ` event ` you're interested in and respond to it. On pressing the toggle buton we see an ` evnet ` with ` type `: `  ` and ` id `: ` null ` so let's add an ` id ` attribute to our buttons in ` createMainTabs `.
+Note that for each event we have two useful attributes: ` type ` and ` id ` which allow you to capture the ` event ` you're interested in and respond to it. On pressing the toggle buton we see an ` event ` with ` type `: ` NavBarButtonPress ` and ` id `: ` null ` so let's add an ` id ` attribute to our buttons in ` createMainTabs `.
 ```js
 navigatorButtons: {
     leftButtons: [
@@ -717,7 +716,7 @@ constructor( props ) {
     props.navigator.setOnNavigatorEvent( onNavigatorEvent.bind( this ) );
 }
 ```
-Note that we used a normal ` function ` style not arrow ` function ` to ` bind ` it with ` this ` to access ` props.navigator `. Itried to use arrow ` function ` and ` bind ` but it did not work.
+Note that we used a normal ` function ` style not arrow ` function ` to ` bind ` it with ` this ` to access ` props.navigator `. I tried to use arrow ` function ` and ` bind ` but it did not work.
 
 * Now the drawer is working. However, for some purpose in **Android** we may need to specify exactly the width of the drawer ` screen ` to work so let's do that in ` SideDrawerScreen `. To set the width of a ` screen ` responsively we need to get the width of the current device ` screen ` or ` window `. To do that we ` import ` ` Dimensions ` from ` react-native ` and get the width of the ` window ` 
 ```js
