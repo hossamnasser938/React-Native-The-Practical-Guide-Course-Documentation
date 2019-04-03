@@ -4,11 +4,11 @@
 * In this module we will look at how to:
   * style ` react native ` apps in general.
   * style apps differently for different platforms: **Android** and **IOS** especially choosing different icons for different platforms.
-  * style apps differently for different screen sizes (**responsive design**) especially respond to **orientation changes**.
+  * style apps differently for different screen sizes (**responsive design**) especially responding to **orientation changes**.
 
 
 ## Using StyleSheet VS. Normal JS Objects
-* Before moving on, you might aske yourself why we need to use ` StyleSheet ` to creat objects for our style or the question in other words: Is there a difference between:
+* Before moving on, you might ask yourself why we need to use ` StyleSheet ` to creat objects for our style or the question in other words: Is there a difference between:
   * using ` StyleSheet ` for defining a style object like this
   ```js
   const styles = StyleSheet.create( {
@@ -26,7 +26,7 @@
   } );
   ```
 
-* The answer is: both of ways work. However, using ` StyleSheet ` is better for two reasons:
+* The answer is: both ways work. However, using ` StyleSheet ` is better for two reasons:
   * It **validates** our styles so if we used a style property in a wrong way, it informs us.
   * It **transforms** our styles into *native* code much more efficirntly.
 
@@ -41,14 +41,14 @@
 
 
 ## Flexbox in Action
-* Up untill now we have not developed the Authentication ` screen ` functionality neither designed it. We wish now to design it and leave its functionality to another module.
+* Up untill now we have not developed the Authentication ` screen ` functionality neither designed it. We wish now to design it and leave its functionality to a later module.
 * In Authentication ` screen ` we should have:
   * a ` Text ` that says Login.
   * a ` Button ` that switches from login to signup mode.
-  * Up to 3 ` TextInput ` for email, password, and confirm password[only in signup mode].
+  * Up to 3 ` TextInput ` for email, password, and confirm password[3 in signup mode, 2 in login mode].
   * a ` Button ` for submitting.
 
-* So let's putt all of this in ` AuthScreen.js `.
+* So let's put all of this in ` AuthScreen.js `.
 ```js
 render() {
     return(
@@ -78,14 +78,14 @@ const styles = StyleSheet.create({
     }
 });
 ```
-Finally the ` style ` ` prop ` of the wrapper ` View `.
+Finally set the ` style ` ` prop ` of the wrapper ` View `.
 ```js
 <View style = { styles.container }>
 ```
 
 
 ## Styling with Relative Units
-* Now we have our ` TextInput `s but they take different ` width ` and sometimes the platform does not respect the ` placeholder ` so it does not appear fully. We wish to set their ` width ` property.
+* Now we have our ` TextInput `s but they take different ` width ` and sometimes the platform does not respect the ` placeholder ` so it does not appear completely. We wish to set their ` width ` property.
 * We can set it to a **fixed** value like ` 300 ` which means 300 pixels. This can work on our device but for small-screen devices it can overlap the available width and for large-screen devices it can appear very small.
 * A better solution is to set it to a **relative** value like ` 80% ` which means 80% of the available width and by that it adapts to small and large screen devices.
 ```js
@@ -143,7 +143,7 @@ render() {
             <Button 
                 title = "Switch to Login"
             />
-            <View style = {styles.inputContainer }>
+            <View style = { styles.inputContainer }>
                 <TextInput placeholder = "E-maill" style = { styles.input }/>
                 <TextInput placeholder = "Password" style = { styles.input }/>
                 <TextInput placeholder = "Confirm Password" style = { styles.input }/>
@@ -189,7 +189,7 @@ export default DefaultInput;
 
 * Notes:
   * ` underlineColorAndroid ` is a ` prop ` that we can use for **Android** only to set the color of an underline for the ` TextInput `.
-  * We used the spreed syntax to let us pass ` props ` from ` DefaultInput ` to ` TextInput `.
+  * We used the spreed syntax to let us pass ` props ` from outside ` DefaultInput `.
 
 * Now we can ` import ` this ` DefaultInput ` in ` AuthScreen ` and use it instead of ` TextInput `. Note that now no need to include style for ` TextInput `. We have a prestyled ` Component `.
 ```js
@@ -207,7 +207,7 @@ import DefaultInput from '../components/UI/DefaultInput';
 ## Synthetic Cascading of Styles
 * Now everything is good unless if we want to **override** something from the style of our ` DefaultInput ` ` component `.
 
-* If we applied a ` style ` ` prop ` on a ` DefaultInput ` ` Component `, we would lose all our default styles. We need a way to let us apply the default style + any styles coming from outside in a way that if we have the same property in both default and outside styles with different values, we take the outside one.
+* If we applied a ` style ` ` prop ` on a ` DefaultInput ` ` Component `, we would lose all our default styles. We need a way to let us apply the default style + any styles coming from outside in a way that if we have the same property in both default and outside styles with different values, we take the outside one(**overriding** the default one).
 
 * In ` DefaultInput.js ` we use the spread syntax and then we assign the ` style ` ` prop ` an array with our default style as the first item and the outside style as the second item[this order makes the outside style, if exists, overrides the default style]. 
 ```js
@@ -261,7 +261,7 @@ Now we successfully get the default style except for the ` backgroundColor ` whi
 
 
 ## Styling Text
-* Now let's make ` Please Log In ` ` Text ` take as much space as it should. In ` UI ` directory let's create a reusable ` component ` to be used for headings. We'll name this file ` HeadingText.js `.
+* Now let's make ` Please Log In ` ` Text ` take as much space as it should. In ` UI ` directory let's create a reusable ` component ` to be used for **headings**. We'll name this file ` HeadingText.js `.
 ```js
 import React from 'react';
 import { Text, StyleSheet } from 'react-native';
@@ -295,13 +295,13 @@ import HeadingText from '../components/UI/HeadingText';
 
 
 ## Cascading Text Styles
-* Suppose that we need to choose a global font family for all ` Text `s in our applications. On way to do that is to add ` fontFamily ` property to style of all prestyled ` Text ` ` components ` we have. However, what would be the case when we want to update that ` fontFamily `. We have to go all over these ` components ` and update them.
+* Suppose that we need to choose a global font family for all ` Text `s in our applications. One way to do that is to add ` fontFamily ` property to the style of all prestyled ` Text ` ` components ` we have. However, what would be the case when we want to update that ` fontFamily `. We have to go all over these ` components ` and update them which results in a **less maintainable** application.
 
 * We can not wrap our application by a ` View ` and set this property in this wrapper. Generally we can not set styles related to ` Text ` on a ` View ` ` component `.
 
 * Fortunately, in ` React Native ` we can have  ` Text ` within a ` Text ` and in this case the styles will be **cascading** which means that the inner ` Text ` takes the style from the outer unless we override it in the inner.
 
-* Based on that a better solution would be to wrapp all ` Text ` ` components ` by, let's say, a ` MainText ` in which we set the style that we want to apply to all ` Text ` ` components ` out there. We still have to wrapp all ` Text ` ` components ` by this ` MainText ` but now it is one place that you update to see your updates all across the app.
+* Based on that a better solution would be to wrap all ` Text ` ` components ` by, let's say, a ` MainText ` in which we set the style that we want to apply to all ` Text ` ` components ` out there. We still have to wrap all ` Text ` ` components ` by this ` MainText ` but now it is one place that you update to see your updates all across the app.
 
 * In ` UI ` directory let's create ` MainText.js `.
 ```js
@@ -310,7 +310,7 @@ import { Text, StyleSheet } from 'react-native';
 
 const MainText = props => (
     <Text style = { styles.mainText }>
-        { props.childre }
+        { props.children }
     </Text>
 );
 
@@ -352,7 +352,7 @@ import MainText from '../components/UI/MainText';
   ```js
   <ImageBackground style={ styles.container } source = { BackImage }>
   ```
-  Do not forget to set the ` source ` ` prop `.
+  It works perfectly but do not forget to set the ` source ` ` prop `.
 
 
 ## Creating a Reusable Custom Button
@@ -417,7 +417,7 @@ Let's use our custom ` DefaultButton ` in ` AuthScreen `.
 
 ## Editing the Share Place Screen
 * Up until now in ` AddPlaceScreen ` we have a ` TextInput ` for the name of the place to be added and a ` Button ` next to it to add the place.
-* Later in the course we will let the user pick an image for the place and specify its position on the maps. Sp let's design our ` AddPlaceScreen ` to have those items in a vertical order:
+* Later in the course we will let the user pick an image for the place and specify its position on the maps. So let's design our ` AddPlaceScreen ` to have those items in a vertical order:
   * Header that says "Share place with us".
   * a ` Button ` to pick image.
   * Placeholder to show place image.
@@ -463,7 +463,7 @@ class AddPlaceScreen extends Component {
                     <View style = { styles.placeholderContainer }>
                         <Text>Map Placeholder</Text>
                     </View>
-                    <View style = { styles.buttonContainer }>
+                    <View style = { styles.inputContainer }>
                         <DefaultInput placeholder = "Enter place name"/>
                     </View>
                     <DefaultButton title = "submit"/>
@@ -485,7 +485,7 @@ const styles = StyleSheet.create( {
         borderWidth: 1,
         margin: 8
     },
-    buttonContainer: {
+    inputContainer: {
         width: "80%"
     }
 } );
@@ -498,7 +498,7 @@ const mapDispatchToProps = ( dispatch ) => {
 
 export default connect( null, mapDispatchToProps )( AddPlaceScreen );
 ```
-Note that assigning styles for the ` ScrollView ` is done through ` contentContainerStyle ` ` prop ` not ` style ` ` prop `. However, in **Android** it does not work. A solution is to wrap all your content in a ` View ` inside the ` ScrollView ` and assign the style to the wrapper ` View `.
+Note that assigning styles for the ` ScrollView ` is done through ` contentContainerStyle ` ` prop ` not ` style ` ` prop `. However, in **Android** it does not work. A possible solution is to wrap all your content in a ` View ` inside the ` ScrollView ` and assign the style to the wrapper ` View `.
 
 
 ## Styling & Splitting the Share Place Screen
@@ -825,7 +825,7 @@ const createMainTabs = () => {
 
 
 ## The Responsive Styling Problem
-* It may seem that we have a good design on our device but what happens when we **rotate** the device or test on a **smaller-screen** device or even on a **large-screen** one? Do we still have a good design?
+* It may seem that we have a good design on our device but what happens when we **rotate** the device or test on a **small-screen** device or even on a **large-screen** one? Do we still have a good design?
 * This issue is known as **responsiveness** which means the ability to **adapt** to different screen sizes.
 * To design ` screens ` that **adapt** to devices of different screen sizes, we may need to adjust them a little bit or we may need to have a totally different design for different categories of devices according to screen sizes.
 * ` React Native ` provides tools that let you get the width and height of the running device and your mission is to use these measures to provide different designs. Let's look at these tools.
@@ -864,10 +864,10 @@ class AuthScreen extends Component {
             viewMode: (Dimensions.get( "window" ).width < 500)? "portrait": "landscape" 
         }
 
-        Dimensions.addEventListener( "change", this.onDimensionsChange.bind( this ) );
+        Dimensions.addEventListener( "change", this.onDimensionsChange );
     }
 
-    onDimensionsChange( dims ) {
+    onDimensionsChange = ( dims ) => {
         this.setState( {
             viewMode: (Dimensions.get( "window" ).width < 500)? "portrait": "landscape" 
         } );
@@ -958,7 +958,7 @@ export default AuthScreen;
 
 
 ## Cleaning up Dimensions Listeners
-* When we ` add ` a listener on ` Dimensions ` we need to ` remove ` this listener when the ` screen ` does not exist because ` React Native ` does not do that for us. So in ` AuthScreen.js ` let's ` remove ` our listener whenever ` componentWillUnmount ` gets called.
+* When we ` add ` a listener on ` Dimensions ` we need to ` remove ` this listener when the ` screen ` does not exist anymore because ` React Native ` does not do that for us. So in ` AuthScreen.js ` let's ` remove ` our listener whenever ` componentWillUnmount ` gets called.
 ```js
 componentWillUnmount() {
     Dimensions.removeEventListener( "change", this.onDimensionsChange );
@@ -987,13 +987,13 @@ componentWillUnmount() {
 
 * We have also a property named ` tabBarButtonColor ` which defines the color of the unselected tabs. We can use it the same way as ` tabBarSelectedButtonColor `.
 
-* To change the color of nab bar ` Button `s we need to do somethinf new to us. Reach out to the ` screen ` or ` screes ` where these ` Buttons ` exist in the nav bar and add this:
+* To change the color of nav bar ` Button `s we need to do something new to us. Reach out to the ` screen ` or ` screes ` where these ` Buttons ` exist in the nav bar and add this:
 ```js
 static navigatorStyle = {
     navBarButtonColor: "#bbb"
 };
 ```
-We know this ` static ` keyword meaning that the ` navigatorStyle ` belongs to the class itself not each instance. In pur case we need t change the ` Button ` that opens the ` SideDrawer ` and it exists in both tabs(` AddPlaceScreen `, ` FindPlaceScreen `) so we duplicate this code there.
+We know this ` static ` keyword meaning that the ` navigatorStyle ` belongs to the class itself not each instance. In our case we need to change the ` Button ` that opens the ` SideDrawer ` and it exists in both tabs(` AddPlaceScreen `, ` FindPlaceScreen `) so we duplicate this code there.
 
 
 ## Preparing the App for Animation
@@ -1096,16 +1096,17 @@ export default connect( mapStateToProps )( FindPlaceScreen );
 * Now we hope to animate the ` Button ` such that when the user hits it comes toward the screen by getting larger and larger and finally it disapears and the places list appear instead.
 * **Animation** in general is nothing more than a property or a set of properties get updated over time. The main challenge with **Animation** is **performance**. 
 * To achieve that we can use the ` Animated ` **Api** provided by ` React Native `. 
-* ` Animated ` **Api** provides ` Animated.Value ` which is a ` class ` we can instantiate ` instances ` out of it. These ` instances ` can be used in **Animation** because ` Animated ` **Api** provides a simple and efficient way to update their values. So not to be confused, an instance of ` Animated.Value ` is not a primitive value, it provides us a value and a way to update this value over time.
+* ` Animated ` **Api** provides ` Animated.Value ` which is a ` class ` we can instantiate ` instances ` out of it. These ` instances ` can be used in **Animation** because ` Animated ` **Api** provides a simple and efficient way to update their values over time. So not to be confused, an instance of ` Animated.Value ` is not a primitive value, it provides us a value and a way to update this value over time.
 * We can assign the instance of ` Animated.Value ` to a ` style ` property and we use a method from ` Animated ` **Api** to update the value.
   * ` Animated ` **Api** provides us with ` components ` that can be animated such as ` Animated.View `, ` Animated.Text ` and others. We should use these ` components ` because ` Animated.Value ` is not a primitive value. For that reason it is used with ` components ` that understand it.
   * For now we will use ` timing ` which is a method we can use to update the value over a time stamp defined by us.
-* Finally, we need a ` style ` property that we can update to achieve our goal. We have ` transform ` property which is used to define certain transformation such as scale and rotation. ` transform ` is assigned an array of objects. Each object has a key which is the kind of transformation, in our case it is ` scale `, and a value, which is in our case the ` Animated.Value ` instance from the ` state `.  
+* Finally, we need a ` style ` property that we can update to achieve our goal. We have ` transform ` property which is used to define certain transformation such as ` scale ` and ` rotation `. ` transform ` is assigned an array of objects. Each object has a key which is the kind of transformation, in our case it is ` scale `, and a value, which is in our case the ` Animated.Value ` instance from the ` state `.  
 * I hope that it is a bit clear till now how we will achieve animation. Let's start:
   1. First ` import ` the ` Animated ` **Api**.
   ```js
   import { View, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native';
   ```
+
   2. Then we define a property in the ` state ` and assign it, guess what, an instance of ` Animated.Value `.
   ```js
   this.state = {
@@ -1114,6 +1115,7 @@ export default connect( mapStateToProps )( FindPlaceScreen );
   }
   ```
   The value passed to ` Animated.Value ` is the initial value.
+  
   3. Then let's wrap our ` Button ` with ` Animated.View ` ` Component ` and define ` style ` with ` transform ` property as we declared above.
   ```js
   <Animated.View style = { { transform: [{ scale: this.state.scale }] } }>
@@ -1124,9 +1126,10 @@ export default connect( mapStateToProps )( FindPlaceScreen );
       </TouchableOpacity>
   </Animated.View>
   ```
+
   4. Then let's use ` timing ` method to specify how and when to animate. We animate when the user hits the ` Button ` so we use ` timing ` in ` onFindPlaces ` ` function `. After calling ` timing ` we call ` start ` to start the animation and optionally pass to ` start ` the callback to be invoked when animation is done which is in our case updating ` placesFetched ` property in the ` state `. ` timing ` accepts: 
     * the instance of ` Animated.Value ` to update.
-    * a configuration object that in our case will hold 2 properties:
+    * a configuration object that in our case will hold 3 properties:
       * ` toValue ` which specifies the value to reach at end[Note that we defined the initial value when we instantiated the instance].
       * ` duration ` which specifies the time in ms that the animation should covers.
       * ` useNativeDriver ` which we assign it ` true ` to let do animation natively intead of doing it in ` JavaScript ` which has a significant effect on performance.
