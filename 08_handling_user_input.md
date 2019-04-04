@@ -6,14 +6,14 @@
     * capture it.
     * validate it.
     * sends useful feedback guiding the user what to enter.
-  * **handle the doft keyboard**[The keyboard of the physical device].
+  * **handle the soft keyboard**[The keyboard of the physical device].
     * What characters to show for a specific ` TextInput `.
     * When to show/hide it.
 
 
 ## Managing Input Control State
-* Let's start by saving user inputs for ` AuthScreen ` in the ` state ` so that we can validate these input whenever they encounter any change from the user.
-* For that we need to keep 3 values in the ` state `: ` email `, ` password `, and ` confirmPassword `(Our inputs). We will also keep for each input, its validity ` state `(Whether th user input is valid or not) as they change whenever the user updates input.
+* Let's start by saving user inputs for ` AuthScreen ` in the ` state ` so that we can validate these inputs whenever they encounter any change from the user.
+* For that we need to keep 3 values in the ` state `: ` email `, ` password `, and ` confirmPassword `(Our inputs). We will also keep for each input its ` value ` and its ` validity state `(Whether the user input is valid or not) as they change whenever the user updates input.
 * However, the instructor will follow a pretty good, and new [at least for me], way of handling user inputs. Instead of **dispersing** the logic of input validation, he will combine all this logic into a single ` function ` that validates all inputs.
 * For that reason, we will not only store the value and validity of these inputs in the ` state `, but also will store the **validation rules**(the rules that check whether a given input is valid or not) there. Absolutely, These **validation rules** do not change in **running time** so why we store them in the ` state `? Actually no reason except for keeping related things next to each other so we have for each input: its value, its validity state, and its validation rules all in one place.
 ```js
@@ -136,9 +136,42 @@ render() {
 
 * For each validation rule, we will define a helper ` function `.
 
-* Inside the general validation ` function ` we first declare a variable named ` valid ` and initialize it with ` true `. Then we loop through each rule in ` validationRules ` and ` AND ` the value of ` valid ` variable with the result of the validator ` function ` for that rule. We do that because if ` valid ` became ` false ` for some rule, we do not want another rule that evaluates to ` true ` to override the previous ` false ` value.
+* Inside the general validation ` function ` we first declare a variable named ` valid ` and initialize it with ` true `. Then we loop through each rule in ` validationRules ` and ` AND ` the value of ` valid ` variable with the result of the validator ` function ` for that rule. We do that because if ` valid ` became ` false ` for some rule, we do not want another rule that evaluates to ` true ` to override the previous ` false ` value. For that purpose we use the **conjunction** ` AND ` operation.
 ```js
+const validate = ( value, rules, connectedValues ) => {
+    let valid = true;
+    
+    for ( let rule in rules ) {
+        switch ( rule ) {
+            case "isEmail":
+                valid = valid & isEmailValidator( value );
+                break;
+            case "minLength":
+                valid = valid & minLengthValidator( value, rules[rule] );
+                break;
+            case "equalTo":
+                valid = valid & equalToValidator( value, connectedValues[rule] ); 
+                break;
+        }
+    }
 
+    return valid;
+};
+
+function isEmailValidator( val ) {
+    const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return emailRegex.test( val );
+}
+
+function minLengthValidator( val, minLength ) {
+    return val.length >= minLength;
+}
+
+function equalToValidator( val, checkVal ) {
+    return val === checkVal;
+}
+
+export default validate;
 ```
 
 * Now let's ` import ` and invoke ` validate ` ` function ` in ` AuthScreen ` whenever the user updates input. So we need to invoke it in ` onUpdateInputs ` ` function `. 
@@ -216,7 +249,7 @@ onUpdateInputs = ( key, val ) => {
     export default DefaultInput;
     ```
 
-    2. Let's provide these ` props ` from ` AuthScreen ` to ` DefaultInput `. We have already ` valid ` of each input. We need to add the logic of ` touched ` ` prop `. We add ` touched ` attribute to the object of each input in ` state.controls ` and we initialize it with ` false ` indicating that it has not been touched yet. Whenever the user updates any input(in ` onUpdateInputs `) we set the updated input ` touched ` attribute to ` true `. The first time this has an effect while the subsequent times this has no effect but it hurts nothing.
+    2. Let's provide these ` props ` from ` AuthScreen ` to ` DefaultInput `. We have already ` valid ` of each input. We need to add the logic of ` touched ` ` prop `. We add ` touched ` attribute to the object of each input in ` state.controls ` and we initialize it with ` false ` indicating that it has not been touched yet. Whenever the user updates any input(in ` onUpdateInputs `) we set the updated input ` touched ` attribute to ` true `. The first time this has an effect while the subsequent times this has no effect but it still has no side effects.
         1. Add ` touched ` to ` state `.
         ```js
         constructor( props ) {
@@ -326,7 +359,7 @@ onUpdateInputs = ( key, val ) => {
         </View>
         ```
 
-    3. The last thing to do is to **disable** the ` submit ` ` Button ` whenever any input is invalid. We use one of ` Touchable ` ` components `(based on the platform) to ` render ` our ` DefaultButton `. ` Touchable ` ` components ` have property named ` disabled ` when it is ` true ` the ` Touchable ` is not touchable any more. However, this has no visual effect. So we need to define a ` style ` for ` disabled ` state.
+    3. The last thing to do is to **disable** the ` submit ` ` Button ` whenever any input is invalid. We use one of ` Touchable ` ` components `(based on the platform) to ` render ` our ` DefaultButton `. ` Touchable ` ` components ` have property named ` disabled ` when it is ` true ` the ` Touchable ` is not touchable any more. However, this has no visual effect. So we need to define a ` style ` for ` disabled ` mode.
     ```js
     import React from 'react';
     import { TouchableOpacity, TouchableNativeFeedback, View, Text, StyleSheet, Platform } from 'react-native';
@@ -422,6 +455,7 @@ onUpdateInputs = ( key, val ) => {
         store,
         Provider);
         ```
+
         2. In ` AuthScreen.js ` let's ` connect ` it to ` redux `.
         ```js
         export default connect(null, mapDispatchToProps)(AuthScreen);
@@ -430,21 +464,23 @@ onUpdateInputs = ( key, val ) => {
         ```js
         import { connect } from 'react-redux';
         ```
-    5. Now let's define our ` mapDispatchToProps ` ` function ` in which we will map ` authUser ` ` Action ` to a ` prop `.
-    ```js
-    const mapDispatchToProps = dispatch => {
-        return {
-            onLogin: authData => {
-                dispatch( authUser( authData ) );
-            }
+
+        3. Now let's define our ` mapDispatchToProps ` ` function ` in which we will map ` authUser ` ` Action ` to a ` prop `.
+        ```js
+        const mapDispatchToProps = dispatch => {
+            return {
+                onLogin: authData => {
+                    dispatch( authUser( authData ) );
+                }
+            };
         };
-    };
-    ```
-    Note that we need to ` import ` ` authUser ` ` Action ` from ` index.js `.
-    ```js
-    import { authUser } from '../redux/actions/index';
-    ```
-    6. Finally we need to ` dispatch ` this ` Action ` in ` loginHandler `.
+        ```
+        Note that we need to ` import ` ` authUser ` ` Action ` from ` index.js `.
+        ```js
+        import { authUser } from '../redux/actions/index';
+        ```
+
+    5. Finally we need to ` dispatch ` this ` Action ` in ` loginHandler `.
     ```js
     loginHandler = () =>  {
         const authData = {
@@ -579,7 +615,7 @@ onUpdateInputs = ( key, val ) => {
     ```
     Do not forget the cloasing tag and also do not forgrt to ` import ` the ` KeyboardAvoidingView ` ` component ` from ` react-native `.
 
-    * Dismiss the keyboard on touching any where. We do that by wrapping everything in a ` TouchableWithoutFeedback ` and set ` onDismiss ` ` prop ` to ` function ` that dismisses the keyboard which is something we can get from the ` Keyboard ` **Api** provided by ` react-native `.
+    * Dismiss the keyboard on touching any where. We do that by wrapping everything in a ` TouchableWithoutFeedback ` and set ` onDismiss ` ` prop ` to ` function ` that dismisses the keyboard which is something we can get from the ` Keyboard ` **Api** provided by ` react-native `. First ` import ` the ` Keyboard ` **Api** from ` React Native ` and then use it.
     ```js
     <KeyboardAvoidingView style = { styles.outerContainer } behavior = "padding">
             <TouchableWithoutFeedback style = { styles.outerContainer } onPress = { Keyboard.dismiss }>
