@@ -13,11 +13,11 @@
 ## Installing react-native-maps
 * ` React Native ` does not provide some way to use the **maps** so we have to use a third-party package to do that.
 
-* **Airbnb** provides us with a package named [` react-native-maps `](https://github.com/react-native-community/react-native-maps) which we can use for that purpose.
+* **Airbnb** provides us with a package named ` react-native-maps ` which we can use for that purpose.
 
-* In the official repository README we can find an [**installation**](https://github.com/react-native-community/react-native-maps/blob/master/docs/installation.md) page that guides us through the installation process on both platfrms.
+* In the official [repository](https://github.com/react-native-community/react-native-maps) README we can find an [**installation**](https://github.com/react-native-community/react-native-maps/blob/master/docs/installation.md) page that guides us through the installation process on both platfrms.
 * A few notes:
-    * I skipped the **project-wide properties** and used the below option which adds dependencies to ` android/app/build.gradle ` file **not** ` android/build.gradle ` file.
+    * I skipped the **project-wide properties** option and used the below one which adds dependencies to ` android/app/build.gradle ` file **not** ` android/build.gradle ` file.
     * You must sign up for Google-Maps Api to get your key which you use in ` Manifest `. To get a free Api key with no billing acount, refer to this [link](http://www.webassist.com/tutorials/Getting-your-Google-Map-API-Key). 
 
 
@@ -85,15 +85,15 @@ const styles = StyleSheet.create({
 export default AddLocation;
 ```
 
-* After that I wish everything work. If there is a problem on **Android**, the instructor suggested 2 things:
-    * In Android Studio making sure that in ` Tools -> Android -> SDK Manager -> SDK Tools  ` the ` Google Play Services ` is checked.
+* Note you have to specify the ` width ` and ` height ` of ` MapView ` explicitly. After that I wish everything work. If there is a problem on **Android**, the instructor suggested 2 things:
+    * In Android Studio making sure that in ` Tools -> Android -> SDK Manager -> SDK Tools  ` the ` Google Play Services ` is checked[That was an issue for me].
     * Downgrade the **Api Level**.
 
 
 ## Picking a Location on the Map
-* Now we want to let the user traverse in the **map**. To be precise he can do so but what we want to do is to let him hit somewhere in the **map** to recenter the map on this hit location.
+* Now we want to let the user traverse in the **map**. To be precise the user already can do so but what we want to do is to let him when hitting somewhere in the **map**, we recenter the map on this hit location.
 
-* So we wanna listen to clicking on the map. Fortunately ` MapView ` has a ` prop ` named ` onPress ` that lets us listen for any ` press ` on the map. ` onPress ` is assigned a callback to be executed whenver ` press ` occurs . This callback should expec to get an ` event ` that wraps an object named ` nativeEvent ` which indeed wraps an object named ` coordinate ` which wraps the attributes of the new hit which is the new ` latitude ` and ` longitude `. We also need to add one more ` prop ` which is ` region `. We already set ` initialRegion ` ` prop`  but that configures only the region initially. To update the region dynamically, we need to set ` region ` to our ` focusedRegion ` in the ` state ` and in response to ` onPress `, we need to update this ` focusedRegion ` to the new attributes.     
+* So we wanna listen to clicking on the map. Fortunately, ` MapView ` has a ` prop ` named ` onPress ` that lets us listen for any ` press ` on the map. ` onPress ` is assigned a callback to be executed whenver ` press ` occurs . This callback should expect to get an ` event ` that wraps an object named ` nativeEvent ` which indeed wraps an object named ` coordinate ` which wraps the attributes of the new hit which is the new ` latitude ` and ` longitude `. We also need to add one more ` prop ` which is ` region `. We already set ` initialRegion ` ` prop`  but that configures only the region initially. To update the region dynamically, we need to set ` region ` to our ` focusedRegion ` in the ` state ` and in response to ` onPress `, we need to update this ` focusedRegion ` to the new attributes.     
 
 * In ` AddLocation `.
     1. define the callback.
@@ -195,7 +195,7 @@ export default AddLocation;
     * the ` region ` to reach to. This object should include ` latitude `, ` longitude `, ` latitudeDelta `, and ` longitudeDelta `.
     * the duration to spend on animating. We can leave that for the default value which is a nice one.
 
-* The problem is that ` animateToRegion ` is executed on ` MapView `. How we can achieve that? Fortunately, ` React ` prvides ` ref ` ` prop ` which allows us to keep track of a reference to a ` Component `. ` ref ` ` prop ` is assigned a ` function ` that accepts this reference to the ` Component ` and you usually assign this reference to an attriute of the class so you can access it form any where in the class using ` this `.
+* The problem is that ` animateToRegion ` is executed on ` MapView ` so how we can achieve that? We need to hold a reference to the ` MapView ` ` Component `. Fortunately, ` React ` prvides ` ref ` ` prop ` which allows us to keep track of a reference to a ` Component `. ` ref ` ` prop ` is assigned a ` function ` that accepts this reference to the ` Component ` and you usually assign this reference to an attriute of the class so you can access it form any where in the class using ` this `.
 
 * Notice that after using ` animateToRegion ` no need to use ` region ` ` prop ` because we now change the ` Region ` dynamically using ` animateToRegion `.
 
@@ -248,10 +248,10 @@ export default AddLocation;
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     ```
     
-    2. Now we can use ` navigator ` to get the location. This seems strange because ` navigator ` is an object that facilitate transition in a ` React Native ` app, but this is how ` React Native ` provides a way to get location. ` navigator ` has  an attribute named ` geolocation ` that has a method named ` getCurrentPosition `. ` getCurrentPosition ` accepts 2 callbacks:
+    2. Now we can use ` navigator ` to get the location. This seems strange because ` navigator ` is an object that facilitates transition between screens in a ` React Native ` app, but this is how ` React Native ` provides a way to get location. ` navigator ` has  an attribute named ` geolocation ` that has a method named ` getCurrentPosition `. ` getCurrentPosition ` accepts 2 callbacks:
         * on success callback where you get a ` position ` object that has ` latitude ` and ` longitude ` of the current location.
-        * on failure callback where you get an ` error `.
-    We need to define a ` function ` to be ` binded ` with ` Locate Me ` ` Button  ` in which we use ` getCurrentLocation ` method and in the on success callback we construct an object having the same structure of the ` event ` we get from ` onPress ` that has ` nativeEvent ` that indeed has ` coordinate ` object which wraps ` latiude ` and ` longitude `. We do that to reuse ` onPressHandler ` to update the ` location ` in the ` state `.
+        * on failure callback where you get an ` error `.  
+    * We need to define a ` function ` to be ` binded ` with ` Locate Me ` ` Button  ` in which we use ` getCurrentLocation ` method and in the on success callback we construct an object having the same structure of the ` event ` we get from ` onPress ` that has ` nativeEvent ` that indeed has ` coordinate ` object which wraps ` latiude ` and ` longitude `. We do that to reuse ` onPressHandler ` to update the ` location ` in the ` state `.
     ```js
     locateMeHandler = () => {
         navigator.geolocation.getCurrentPosition(
@@ -284,9 +284,9 @@ export default AddLocation;
 
 
 ## Storing the Picked Location with Redux
-* Now we successfuly can take the location from the user. We need to keep track this location. Whenever the user submits a new place we need to store the location of that place.
+* Now we successfuly can take the location from the user. We need to keep track of this location. Whenever the user submits a new place we need to store the location of that place.
 * What we will do is: updating the ` Action ` ` AddPlace ` to store not only the place name but also its location and updating both ` AddPlaceScreen ` and ` AddPlace ` ` Component ` accordingly.
-    1. We will submit not only the place name but also its location so we can not submit it from ` AddPlace ` ` Component ` because there we know nothing about the location. We will store every thing related to the place in ` AddPlaceScreen ` and submit from there. For that we will turn ` AddPlace ` ` Componenet ` to a functional ` Componenet ` and update tha ` state ` of ` AddPlaceScreen ` on changing the text. We will accept the 2 ` props ` from ` AddPlaceScreen `: the placeName from the ` state ` and a handler to update this ` state ` with the newly typed place name.
+    1. We will submit not only the place name but also its location so we can not submit it from ` AddPlace ` ` Component ` because there we know nothing about the location. We will store every thing related to the place in ` AddPlaceScreen ` and submit from there. For that we will turn ` AddPlace ` ` Componenet ` to a functional ` Componenet ` and update tha ` state ` of ` AddPlaceScreen ` on changing the text. We will accept 2 ` props ` from ` AddPlaceScreen `: the placeName from the ` state ` and a handler to update this ` state ` with the newly typed place name.
     ```js
     import React from 'react';
     import { View, StyleSheet } from 'react-native';
@@ -359,7 +359,7 @@ export default AddLocation;
         }
         ```
 
-        3. ` bind ` those handlers with there ` components `.
+        3. ` bind ` those handlers with their ` components `.
         ```js
         <AddLocationComponent 
           updateLocationHandler = { this.updateLocationHandler }
