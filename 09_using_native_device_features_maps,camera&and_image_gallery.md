@@ -549,4 +549,256 @@ export default connect( null, mapDispatchToProps )(PlaceDetailsScreen);
 ```
 
 
-## 
+## Installing react-native-image-picker
+* Now we need to let the user either pick an image from his gallery or take a photo using his camera for the place he/she is sharing.
+* For that we need a third-paty library. ` react-native-image-picker ` can do that for us.
+* Let's install ` react-native-image-picker ` by hitting ` npm install --save react-native-image-picker `.
+* Since ` react-native-image-picker ` package targets a *native* feature, it needs to be installed in **Android Studio** and **XCode**. To do that we follow the installation process in their official [repository](https://github.com/react-native-community/react-native-image-picker) and do not forget to add the permissions needed.
+* On following the installation guide and reinstalling the app, I got this error ` Could not determine java version from '10.0.2' ` so I neglected the steps that downgrade gradle and it is then installed successfully.
+
+
+## Using the Image Picker
+* Now after installing ` react-native-image-picker `, let's use it to let the user pick an image for the place to be shared.
+* ` react-native-image-picker ` ` exports ` by ` default ` an object that has a method named ` showImagePicker ` which, as the name suggests, shows a dialog for the user to pick an image. ` showImagePicker ` accepts:
+    * a configuration object. In our case we only set the ` title ` property there to give the user a hint about what he/she is going to do.
+    * a callback that should expect to get a ` response ` object. This ` response ` could have an ` error ` on failure or a path or ` uri ` to the image picked on success. ` response ` object has a method named ` didCancel ` which reflects whether the user canceled picking image or not.
+* Let's employ this work in ` PickImage ` ` Component `.
+```js
+import React, { Component } from 'react';
+import { View, Image, StyleSheet } from 'react-native';
+import DefaultButton from './UI/DefaultButton';
+import ImagePicker from 'react-native-image-picker';
+
+class PickImage extends Component {
+    state = {
+        pickedImage: null
+    }
+
+    imagePickerHandler = () => {
+        ImagePicker.showImagePicker(
+            {
+                title: "Pick image for your place"
+            },
+            response => {
+                if ( response.didCancel ) {
+                    console.log( "User cancelled the dialog" );
+                }
+                else if ( response.error ) {
+                    alert( "Failed to pick an image" );
+                }
+                else {
+                    this.setState( {
+                        pickedImage: {
+                            uri: response.uri
+                        }
+                    } );
+                }
+            }
+        );
+    }
+    
+    render() {
+        return (
+            <View style = { styles.container }>
+                <DefaultButton 
+                  title="Pick Image"
+                  onPress = { this.imagePickerHandler }  
+                />
+                <Image
+                  style = { styles.image }
+                  source = { this.state.pickedImage }
+                />
+            </View>
+        ); 
+    }
+}
+
+const styles = StyleSheet.create({
+    container: {
+        width: "100%",
+        alignItems: "center"
+    },
+    image: {
+        width: "80%",
+        height: 150,
+        borderColor: "#bbb",
+        borderWidth: 1,
+        margin: 8
+    }
+});
+
+export default PickImage;
+```
+* Note that:
+    * the name ` ImagePicker ` is up to you since it is a ` default ` ` exxport `.
+    * We assigned the ` pickedPlace ` an object wrapping ` uri ` property because that's what ` source ` ` prop ` on ` Image ` ` Component ` expects us to pass.
+
+
+## Storing the Picked Images
+* Now we need to keep track of the image in the place object in places array.
+    1. In ` AddPlaceScreen.js `.
+        1. Add ` image ` to ` state.controls `.
+        ```js
+        constructor( props ) {
+            super( props );
+            props.navigator.setOnNavigatorEvent( onNavigatorEvent.bind( this ) );
+            this.state = {
+                controls: {
+                    placeName: "",
+                    location: null,
+                    image: null
+                }
+            }
+        }
+        ```
+        2. Provide a handler to update this ` image ` attribute. 
+        ```js
+        updateImageHandler = image => {
+            this.setState( prevState => {
+                return {
+                    controls: {
+                        ...prevState.controls,
+                        image
+                    }
+                };
+            } )
+        };
+        ```
+        3. ` bind ` this handler with ` PickImage ` ` Component `.
+        ```js
+        <PickImageComponent 
+            updateImageHandler = { this.updateImageHandler }
+        />
+        ```
+        4. pass the ` image ` in ` AddPlace ` ` Action `.
+        ```js
+        const mapDispatchToProps = ( dispatch ) => {
+            return {
+                onAddPlace: ( newPlaceName, newPlaceLocation, newImage ) => dispatch( addPlace( newPlaceName, newPlaceLocation, newImage ) )
+            };
+        };
+        ```
+        ```js
+        addPlaceHandler = () => {
+            this.props.onAddPlace( 
+                this.state.controls.placeName, 
+                this.state.controls.location,
+                this.state.controls.image 
+            );
+        }
+        ```
+    2. In ` PickImage.js ` invoke ` updateImageHandler ` this handler on updating image.
+    ```js
+    imagePickerHandler = () => {
+        ImagePicker.showImagePicker(
+            {
+                title: "Pick image for your place"
+            },
+            response => {
+                if ( response.didCancel ) {
+                    console.log( "User cancelled the dialog" );
+                }
+                else if ( response.error ) {
+                    alert( "Failed to pick an image" );
+                }
+                else {
+                    this.setState( {
+                        pickedImage: {
+                            uri: response.uri
+                        }
+                    } );
+                    this.props.updateImageHandler( response.uri )
+                }
+            }
+        );
+    }
+    ```
+    3. In ` redux/actions/places ` update the ` AddPlace ` ` Action ` to pass the ` image ` of the place.
+    ```js
+    export const addPlace = ( placeName, placeLocation, placeImage ) => {
+        return {
+            type: ADD_PLACE,
+            payload: {
+                placeName,
+                placeLocation,
+                placeImage
+            }
+        };
+    };
+    ```
+    4. In ` redux/reducers/places ` update the ` reducer ` to use the given image instead of the hardcoded one.
+    ```js
+    import { ADD_PLACE, DELETE_PLACE } from '../actions/ActionTypes';
+
+    const initialState = {
+        places: []
+    };
+
+    const placesReducer = (state = initialState, action) => {
+        var coppiedState = {
+            ...state,
+            places: [...state.places]
+        }
+        
+        switch ( action.type ) {
+            case ADD_PLACE :
+                coppiedState.places.push( {
+                    key: String( Math.random() ),
+                    name: action.payload.placeName,
+                    image: {
+                        uri: action.payload.placeImage
+                    },
+                    location: action.payload.placeLocation
+                } );
+                break;
+            case DELETE_PLACE :
+                coppiedState.places = coppiedState.places.filter( place => place.key != action.payload );
+                break;
+        }
+
+        return coppiedState;
+    };
+
+    export default placesReducer;
+    ```
+
+
+## Image Picker and the Data It returns
+* ` react-native-image-picker ` not only provides us with the ` uri ` of the image picked, but also with a ` base64 ` representation of the image. This is a string representation of the image which is very useful when pushing images to a server. This ` base64 ` representation is in the ` data ` attribute of ` response ` object. So let's pass this representation to be used in the future when working on netwoking. In ` PickImage.js `.
+```js
+imagePickerHandler = () => {
+    ImagePicker.showImagePicker(
+        {
+            title: "Pick image for your place"
+        },
+        response => {
+            if ( response.didCancel ) {
+                console.log( "User cancelled the dialog" );
+            }
+            else if ( response.error ) {
+                alert( "Failed to pick an image" );
+            }
+            else {
+                this.setState( {
+                    pickedImage: {
+                        uri: response.uri,
+                        base64: response.data
+                    }
+                } );
+                this.props.updateImageHandler( response.uri )
+            }
+        }
+    );
+}
+```
+* Note that we can disable this feature if we do not want to use. Disabling this feature improves performance since it takes a little time to convert the image ro this ` base64 ` representation. We can disable it in the configuration object passed to ` showImagePicker ` method by setting ` noData ` attribute to ` false `.
+```js
+ImagePicker.showImagePicker(
+    {
+        title: "Pick image for your place",
+        noData: true
+    },response => {
+        //        
+    }
+);
+```
